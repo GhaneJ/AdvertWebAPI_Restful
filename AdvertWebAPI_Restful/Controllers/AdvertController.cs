@@ -1,5 +1,6 @@
 ﻿using AdvertWebAPI_Restful.Data;
 using AdvertWebAPI_Restful.Model;
+using AdvertWebAPI_Restful.Services.AdvertService;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,82 +12,61 @@ namespace AdvertWebAPI_Restful.Controllers
     public class AdvertController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAdvertService _advertService;
 
-        public AdvertController(ApplicationDbContext context)
+        public AdvertController(ApplicationDbContext context, IAdvertService advertService)
         {
             _context = context;
+            _advertService = advertService;
         }
 
         [HttpGet]
-        public IEnumerable<AdvertDTO> Get()
+        public IActionResult GetAll()
         {
-            return _context.Adverts.Select(e => new AdvertDTO
+            var adverts = _advertService.List();
+            if (adverts == null)
             {
-                Id = e.Id,
-                AdvertTitle = e.AdvertTitle,
-                AdvertText = e.AdvertText,
-                DateAdded = e.DateAdded
-            });
+                return NotFound("Inga annonser hittades!");
+            }
+            return Ok(adverts);
         }
 
         [HttpGet]
         [Route("{id}")]
 
         public IActionResult GetSingle(int id)
-        {
-            var advert = _context.Adverts.Where(e=>e.Id == id).Select(e=> new AdvertNewDTO
-            {
-                Id = e.Id,
-                AdvertTitle = e.AdvertTitle,
-                AdvertText = e.AdvertText,
-                DateAdded = DateTime.Now,
-            }).FirstOrDefault();
+        { 
+            var advert = _advertService.Get(id);
             if (advert == null)
-                return NotFound();
+            {
+                return NotFound("Denna annons kan ej hittas");
+            }
             return Ok(advert);
         }
         [HttpPost]
 
         public ActionResult<AdvertDTO> Create(AdvertNewDTO model)
         {
-            var advert = new Advert
-            {
-                AdvertTitle = model.AdvertTitle,
-                AdvertText = model.AdvertText,
-                DateAdded= DateTime.Now
-            };
-            _context.Adverts.Add(advert);
-            _context.SaveChanges();
-            int id = advert.Id;
-            var obj = new AdvertDTO();
-            obj.AdvertTitle = model.AdvertTitle;
-            obj.AdvertText = model.AdvertText;
-            obj.DateAdded = model.DateAdded;
+            var result = _advertService.Create(model);
+            return Ok(result);
 
-            return CreatedAtAction(nameof(GetSingle),new { id = id }, obj);
         }
         [HttpPut("{id}")]
 
         public IActionResult Put(int id, [FromBody] AdvertDTO model)
         {
-            var advert = _context.Adverts.FirstOrDefault(e=>e.Id == id);
-            if (advert == null) return NotFound();
-            advert.AdvertTitle = model.AdvertTitle;
-            advert.AdvertText = model.AdvertText;
-            advert.DateAdded = model.DateAdded;
-            _context.SaveChanges();
+            var advert = _advertService.Update(id, model);
+            if (advert == null) return NotFound("Annonsen kan inte hittas!");
             return Ok(advert);
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            Advert advert = _context.Adverts.Where(x => x.Id == id).FirstOrDefault();
+            var advert = _advertService.Delete(id);
             if (advert == null)
             {
-                return NotFound();
+                return NotFound("Den här annonsen finns inte!");
             }
-            _context.Adverts.Remove(advert);
-            _context.SaveChanges();
             return Ok(advert);
         }
     }
