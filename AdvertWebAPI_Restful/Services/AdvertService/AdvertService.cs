@@ -12,6 +12,9 @@ namespace AdvertWebAPI_Restful.Services.AdvertService
         {
             _context = context;
         }
+
+        
+
         public Advert Create(AdvertNewDTO model)
         {
             var advert = new Advert
@@ -29,6 +32,7 @@ namespace AdvertWebAPI_Restful.Services.AdvertService
         {
             return _context.Adverts.Select(e => new AdvertDTO
             {
+                Id = e.Id,
                 AdvertTitle = e.AdvertTitle,
                 AdvertText = e.AdvertText,
                 DateAdded= DateTime.Now
@@ -40,7 +44,8 @@ namespace AdvertWebAPI_Restful.Services.AdvertService
         }
         public Advert Update(int id, [FromBody] AdvertDTO model)
         {
-            var advert = _context.Adverts.FirstOrDefault(e => e.Id == id);
+            var advert = _context.Adverts.First(e => e.Id == id);
+            advert.Id = id;
             advert.AdvertTitle = model.AdvertTitle;
             advert.AdvertText = model.AdvertText;
             advert.DateAdded = model.DateAdded;
