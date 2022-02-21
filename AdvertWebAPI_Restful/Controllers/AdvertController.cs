@@ -28,7 +28,6 @@ namespace AdvertWebAPI_Restful.Controllers
         }
 
         [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Standard")]
         public IActionResult GetAll()
         {
             var adverts = _advertService.List();
@@ -41,7 +40,7 @@ namespace AdvertWebAPI_Restful.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Standard")]
+        
         public IActionResult GetSingle(int id)
         {
             var advert = _advertService.Get(id);
@@ -74,6 +73,7 @@ namespace AdvertWebAPI_Restful.Controllers
         }
 
         [HttpPatch("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, Standard")]
         public IActionResult Patch(int id, [FromBody] JsonPatchDocument<Advert> patchDocument)
         {
             var advert = _advertService.Get(id);
