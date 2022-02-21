@@ -1,5 +1,7 @@
 ﻿using AdvertWebAPI_Restful.Data;
 using AdvertWebAPI_Restful.Model;
+using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvertWebAPI_Restful.Services.AdvertService
@@ -7,10 +9,12 @@ namespace AdvertWebAPI_Restful.Services.AdvertService
     public class AdvertService : IAdvertService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public AdvertService(ApplicationDbContext context)
+        public AdvertService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         
@@ -52,6 +56,7 @@ namespace AdvertWebAPI_Restful.Services.AdvertService
             _context.SaveChanges();
             return advert;
         }
+
         public IResult Delete(int id)
         {
             Advert advert = _context.Adverts.Where(e => e.Id == id).FirstOrDefault();

@@ -3,6 +3,7 @@ using AdvertWebAPI_Restful.Model;
 using AdvertWebAPI_Restful.Models;
 using AdvertWebAPI_Restful.Services;
 using AdvertWebAPI_Restful.Services.AdvertService;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -11,20 +12,32 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SkysApi220202.Data;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddMvc();
-builder.Services.AddControllers();
+//builder.Services.AddMvc();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTransient<DataInitializer>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IAdvertService, AdvertService>();
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "HTTPPatchPartialUpdate",
+        Version = "v1",
+        Description = "Authentication and authorization in Asp.Net Core with JWT and Swagger"
+    });
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Scheme = "Bearer",
@@ -63,10 +76,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddAuthorization();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
@@ -91,21 +104,5 @@ app.MapPost("/login",
 (UserLogin user, IUserService _userService, IConfiguration configuration) => userService.Login(user, _userService, configuration))
     .Accepts<UserLogin>("application/json")
     .Produces<string>();
-//AdvertService advertService = new AdvertService();
-app.MapPost("/create",
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-(AdvertNewDTO model, IAdvertService advertService) => advertService.Create(model))
-    .Accepts<Advert>("application/json")
-    .Produces<Advert>(statusCode: 200, contentType: "application/json");
-app.MapGet("/list",
-    (IAdvertService advertService) => advertService.List())
-    .Produces<List<Advert>>(statusCode: 200, contentType: "application/json");
-app.MapPut("/update",
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-(int id, IAdvertService advertService, [FromBody] AdvertDTO model) => advertService.Update(id, model))
-    .Accepts<Advert>("application/json")
-    .Produces<Advert>(statusCode: 200, contentType: "application/json");
-app.MapDelete("/delete",
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-(int id, IAdvertService advertService) => advertService.Delete(id));
+
 app.Run();

@@ -34,7 +34,7 @@ namespace AdvertWebAPI_Restful.Services
                     issuer: configuration["Jwt:Issuer"],
                     audience: configuration["Jwt:Audience"],
                     claims: claims,
-                    expires: DateTime.UtcNow.AddDays(1),
+                    expires: DateTime.UtcNow.AddDays(10),
                     notBefore: DateTime.UtcNow,
                     signingCredentials: new SigningCredentials(
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
