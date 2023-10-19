@@ -1,17 +1,11 @@
 using AdvertWebAPI_Restful.Data;
-using AdvertWebAPI_Restful.Model;
 using AdvertWebAPI_Restful.Models;
 using AdvertWebAPI_Restful.Services;
 using AdvertWebAPI_Restful.Services.AdvertService;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SkysApi220202.Data;
 using System.Reflection;
 using System.Text;
 
@@ -104,5 +98,4 @@ app.MapPost("/login",
 (UserLogin user, IUserService _userService, IConfiguration configuration) => userService.Login(user, _userService, configuration))
     .Accepts<UserLogin>("application/json")
     .Produces<string>();
-
 app.Run();

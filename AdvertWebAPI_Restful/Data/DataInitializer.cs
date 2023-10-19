@@ -1,10 +1,7 @@
-﻿using AdvertWebAPI_Restful.Data;
+﻿namespace AdvertWebAPI_Restful.Data;
+
 using AdvertWebAPI_Restful.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
-
-namespace SkysApi220202.Data;
 
 public class DataInitializer
 {
@@ -16,10 +13,10 @@ public class DataInitializer
     public void SeedData()
     {
         _context.Database.Migrate();
-        seedAdverts();
+        SeedAdverts();
     }
 
-    private void seedAdverts()
+    private void SeedAdverts()
     {
         createAdverts();
         _context.SaveChanges();
@@ -30,7 +27,7 @@ public class DataInitializer
         var advert = new Advert();
         {
             if (!_context.Adverts.Any(e => e.AdvertTitle == "Mobiltelefon"))
-            _context.Adverts.Add(new Advert { AdvertTitle = "Mobiltelefon", AdvertText = "En mobiltelefon med de originala utrustningarna!", DateAdded = DateTime.Now });
+                _context.Adverts.Add(new Advert { AdvertTitle = "Mobiltelefon", AdvertText = "En mobiltelefon med de originala utrustningarna!", DateAdded = DateTime.Now });
             if (!_context.Adverts.Any(e => e.AdvertTitle == "Dator"))
                 _context.Adverts.Add(new Advert { AdvertTitle = "Dator", AdvertText = "En Bra dator i bra skick, billig och bärbar!", DateAdded = DateTime.Now });
             if (!_context.Adverts.Any(e => e.AdvertTitle == "Mugg"))
@@ -44,7 +41,6 @@ public class DataInitializer
             if (!_context.Adverts.Any(e => e.AdvertTitle == "Bord"))
                 _context.Adverts.Add(new Advert { AdvertTitle = "Bord", AdvertText = "Ett gammalt brunt bord för dukning", DateAdded = DateTime.Now });
         };
-            
-            return advert;
+        return advert;
     }
 }

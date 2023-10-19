@@ -1,14 +1,13 @@
-﻿using AdvertWebAPI_Restful.Model;
+﻿namespace AdvertWebAPI_Restful.Data;
+
+using AdvertWebAPI_Restful.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace AdvertWebAPI_Restful.Data
+public class ApplicationDbContext : DbContext
 {
-    public class ApplicationDbContext : DbContext
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
-        public DbSet<Advert> Adverts { get; set; }
     }
+    public DbSet<Advert> Adverts { get; set; }
 }

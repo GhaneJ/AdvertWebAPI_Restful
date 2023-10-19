@@ -1,8 +1,7 @@
-﻿namespace AdvertWebAPI_Restful.Models
+﻿namespace AdvertWebAPI_Restful.Models;
+
+public class UserLogin
 {
-    public class UserLogin
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
+    public string Username { get; set; }
+    public string Password { get; set; }
 }

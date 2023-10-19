@@ -1,23 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace AdvertWebAPI_Restful.Model;
+
 using System.ComponentModel.DataAnnotations;
 
-namespace AdvertWebAPI_Restful.Model
+public class AdvertDTO
 {
-    public class AdvertDTO
-    {
-        public int Id { get; set; }
-        [MaxLength(50)]
-        public string AdvertTitle { get; set; }
-        public string AdvertText { get; set; }
-        public DateTime DateAdded { get; set; }
-    }
+    public int Id { get; set; }
 
-    public class AdvertNewDTO
-    {
-        public int Id { get; set; }
-        [MaxLength(50)]
-        public string AdvertTitle { get; set; }
-        public string AdvertText { get; set; }
-        public DateTime DateAdded { get; set; }
-    }
+    [MaxLength(50)]
+    public string AdvertTitle { get; set; }
+    public string AdvertText { get; set; }
+    public DateTime DateAdded { get; set; }
+}
+
+public class AdvertNewDTO
+{
+    public int Id { get; set; }
+
+    [MaxLength(50)]
+    public string AdvertTitle { get; set; }
+    public string AdvertText { get; set; }
+    public DateTime DateAdded { get; set; }
 }
