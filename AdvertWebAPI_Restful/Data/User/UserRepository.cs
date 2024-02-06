@@ -15,5 +15,4 @@ public class UserRepository
             GivenName="Ghane", Surname="Jahanshahi",
             Password="Hejsan123#",Role="User"}
     };
-
 }
